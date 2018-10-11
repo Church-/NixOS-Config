@@ -40,6 +40,12 @@
 	nmap
 	metasploit
 
+	#Communications
+	discord
+	bitlbee
+	bitlbee-discord
+	
+
 	#Web
 	firefox
 	rtv

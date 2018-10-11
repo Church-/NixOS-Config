@@ -81,9 +81,9 @@ terminal_input serial console ; terminal_output serial console";
   # services.xserver.desktopManager.plasma5.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-   users.extraUsers.aleph = {
+   users.extraUsers.noah = {
      isNormalUser = true;
-     extraGroups = [ "wheel" "disk" "systemd-journal" ];
+     extraGroups = [ "wheel" "disk" "systemd-journal" "docker" ];
      uid = 1000;
    };
 
