@@ -6,11 +6,11 @@
     unzip
     zstd
     ranger
-	pastebinit
+    pastebinit
 	
     # Development
     go
-	cargo
+    cargo
 	 
     # Encryption
     gnupg
@@ -18,15 +18,15 @@
 
     # Multimedia
     youtube-dl
-	vlc
-	mpv
-	ncmpcpp
-	mopdiy
-	rtmpdump	
-	
-	#Misc
-	scrot
-	neofetch
+    vlc
+    mpv
+    ncmpcpp
+    rtmpdump	
+	fbreader
+		
+    #Misc
+    scrot
+    neofetch
 	
     # Networking
     sshuttle
@@ -44,10 +44,10 @@
 	discord
 	bitlbee
 	bitlbee-discord
-	
+	weechat	
 
 	#Web
-	firefox
+#	firefox
 	rtv
 	
     # Publishing

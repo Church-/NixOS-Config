@@ -2,6 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
+
 { config, pkgs, ... }:
 
 {
@@ -10,27 +11,22 @@
       ./hardware-configuration.nix
 #      "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
       "${builtins.fetchGit { url="https://github.com/rycee/home-manager"; ref="master"; }}/nixos"
-     ./fan.nix
-     ./system76
     ];
 
-  nixpkgs.config.allowUnfree = true;
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelModules = [ "it87" "coretemp" ];
-  services.xserver.autorun = true;
-
-  services.journald.extraConfig = "Storage=persistent"; 
+  # Use the GRUB 2 boot loader.
+  boot.loader.grub.enable = true;
+  boot.loader.grub.version = 2;
+  # boot.loader.grub.efiSupport = true;
+  # boot.loader.grub.efiInstallAsRemovable = true;
+  # boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  # Define on which hard drive you want to install Grub.
+  boot.loader.grub.device = "/dev/xvda"; # or "nodev" for efi only
+  boot.loader.grub.extraConfig = "serial --unit=0 --speed=115200 ; 
+terminal_input serial console ; terminal_output serial console";
+  boot.kernelParams = ["console=ttyS0"];
   # networking.hostName = "nixos"; # Define your hostname.
-#   networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-   networking.networkmanager.enable = true;
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Select internationalisation properties.
   # i18n = {
@@ -40,17 +36,17 @@
   # };
 
   # Set your time zone.
-   time.timeZone = "America/New_York";
+  # time.timeZone = "Europe/Amsterdam";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
    environment.systemPackages = with pkgs; [
-     wget vim htop git micro gnome3.gnome-terminal
-     rofi terminator lm_sensors firefox-bin
+     wget vim nano tmux git curl lm_sensors
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
+  # programs.bash.enableCompletion = true;
   # programs.mtr.enable = true;
   # programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
 
@@ -74,48 +70,31 @@
 
   # Enable the X11 windowing system.
    services.xserver.enable = true;
-   services.xserver.layout = "us";
+  # services.xserver.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e";
 
   # Enable touchpad support.
-   services.xserver.libinput.enable = true;
+  # services.xserver.libinput.enable = true;
 
   # Enable the KDE Desktop Environment.
-#   services.xserver.displayManager.sddm.enable = true;
-#   services.xserver.desktopManager.plasma5.enable = true;
-    services.xserver.windowManager.i3.enable = true;
+  # services.xserver.displayManager.sddm.enable = true;
+  # services.xserver.desktopManager.plasma5.enable = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+   users.extraUsers.noah = {
+     isNormalUser = true;
+     extraGroups = [ "wheel" "disk" "systemd-journal" "docker" ];
+     uid = 1000;
+   };
+
+  home-manager.users.aleph = import ./home.nix;
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you
   # should.
-  system.stateVersion = "18.09"; # Did you read the comment?
-  
+  system.stateVersion = "18.03"; # Did you read the comment?
 
-   users.extraUsers.noah = {
-     isNormalUser = true;
-     extraGroups = [ "wheel" "disk" "systemd-journal" "docker" "networkmanager" ];
-     uid = 1000;
-   };
-
-  home-manager.users.noah = import ./home.nix;
-
-
-services.xserver.videoDrivers = [ "nvidia" ];
-
-hardware.nvidia.optimus_prime = {
-  enable = true;
-  nvidiaBusId = "PCI:1:0:0";
-  intelBusId = "PCI:0:2:0";
-};
-
-
-
-nix.nixPath = [ 
-  "nixpkgs=/root/nixpkgs" 
-  "nixos-config=/etc/nixos/configuration.nix"
-]; 
-
-
+  #Allow non free packages
+  nixpkgs.config.allowUnfree = true;
 }
-
