@@ -2,11 +2,11 @@
 
 {
 
-#  imports = [
-#	./git.nix
+  imports = [
+	./git.nix
 #	./firefox.nix
 #	./i3.nix
-#];
+];
 
 
 #  programs.firefox = {
